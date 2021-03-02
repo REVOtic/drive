@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 // @ts-ignore
-import { dispatchCustomEvent, ButtonPrimary, GlobalNotification, Input } from 'slate-react-system';
+import { dispatchCustomEvent, GlobalNotification } from 'slate-react-system';
 import { PrivateKey } from '@textile/hub';
 import { BigNumber, providers, utils } from 'ethers';
 import { hashSync } from 'bcryptjs';
+import { Button, Input } from '@material-ui/core';
+import "./Login.css";
+import fox from "./images/metamask.png"
 
 type WindowInstanceWithEthereum = Window & typeof globalThis & { ethereum?: providers.ExternalProvider };
 class StrongType<Definition, Type> {
@@ -13,13 +16,12 @@ class StrongType<Definition, Type> {
 }
 export class EthereumAddress extends StrongType<'ethereum_address', string> { }
 
-class App extends React.Component {
-    state = {
-        secret: ''
-    }
-    handleChange = (e: any) => this.setState({ [e.target.name]: e.target.value });
+function Login() {
 
-    private generateMessageForEntropy(ethereum_address: EthereumAddress, application_name: string, secret: string): string {
+    const [userSecret, setUserSecret] = useState('');
+    const handleChange = (e: any) => setUserSecret(e.target.value);
+
+    const generateMessageForEntropy = (ethereum_address: EthereumAddress, application_name: string, secret: string): string => {
         return (
             '******************************************************************************** \n' +
             'READ THIS MESSAGE CAREFULLY. \n' +
@@ -57,7 +59,7 @@ class App extends React.Component {
         );
     }
 
-    getSigner = async () => {
+    const getSigner = async () => {
         if (!(window as WindowInstanceWithEthereum).ethereum) {
             throw new Error(
                 'Ethereum is not connected. Please download Metamask from https://metamask.io/download.html'
@@ -71,8 +73,8 @@ class App extends React.Component {
         return signer
     }
 
-    public async getAddressAndSigner(): Promise<{ address: EthereumAddress, signer: any }> {
-        const signer = await this.getSigner()
+    const getAddressAndSigner = async (): Promise<{ address: EthereumAddress, signer: any }> => {
+        const signer = await getSigner()
         // @ts-ignore
         const accounts = await (window as WindowInstanceWithEthereum).ethereum.request({ method: 'eth_requestAccounts' });
         if (accounts.length === 0) {
@@ -83,11 +85,11 @@ class App extends React.Component {
 
         return { address, signer }
     }
-    generatePrivateKey = async (): Promise<PrivateKey> => {
-        const metamask = await this.getAddressAndSigner()
+    const generatePrivateKey = async (): Promise<PrivateKey> => {
+        const metamask = await getAddressAndSigner()
         // avoid sending the raw secret by hashing it first
-        const secret = hashSync(this.state.secret, 10)
-        const message = this.generateMessageForEntropy(metamask.address, 'textile-demo', secret)
+        const secret = hashSync(userSecret, 10)
+        const message = generateMessageForEntropy(metamask.address, 'textile-demo', secret)
         const signedText = await metamask.signer.signMessage(message);
         const hash = utils.keccak256(signedText);
         if (hash === null) {
@@ -108,7 +110,7 @@ class App extends React.Component {
         const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(array))
         console.log(identity.toString())
 
-        this.createNotification(identity)
+        createNotification(identity)
 
         // Your app can now use this identity for generating a user Mailbox, Threads, Buckets, etc
         console.log(identity);
@@ -116,7 +118,7 @@ class App extends React.Component {
         return identity
     }
 
-    createNotification = (identity: PrivateKey) => {
+    const createNotification = (identity: PrivateKey) => {
         dispatchCustomEvent({
             name: "create-notification", detail: {
                 id: 1,
@@ -125,26 +127,27 @@ class App extends React.Component {
             }
         });
     }
+    return (
+        <div className="login">
 
-    render() {
-        return (
             <div className="container">
+                <img src={fox} alt="" />
                 <GlobalNotification style={{ bottom: 0, right: 0 }} />
-                <div className="login">
-                    <Input
-                        description="Combine a private secret with Metamask signing to generate ed25519 private key"
-                        tooltip="Enter a secret. View console."
+                <div className="login__form">
+
+                    <p>Combine a private secret with Metamask signing to generate ed25519 private key</p>
+                    <input
                         name="secret"
-                        value={this.state.secret}
+                        value={userSecret}
                         placeholder="Secret"
                         type="password"
-                        onChange={this.handleChange}
+                        onChange={handleChange}
                     />
-                    <ButtonPrimary full onClick={this.generatePrivateKey} >Login with Metamask</ButtonPrimary>
+                    <Button onClick={generatePrivateKey} >Login with Metamask</Button>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
 
-export default App;
+export default Login;
