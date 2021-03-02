@@ -5,7 +5,7 @@ import Card from './Card';
 import "./Docs.css";
 
 function Docs() {
-    const [files, setFiles] = useState([]);
+
     const user = useSelector(selectUser);
 
     useEffect(() => {
@@ -17,14 +17,7 @@ function Docs() {
     return (
         <div className="docs">
 
-            {files.map(file => <Card
-                filehash={file.filehash}
-                filename={file.filename}
-                date={file.date}
-                desc={file.desc}
-                id={file.id}
-                key={file.id}
-                ftype={file.ftype} />)}
+
         </div>
     )
 }

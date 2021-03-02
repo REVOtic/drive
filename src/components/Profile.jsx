@@ -6,7 +6,7 @@ import "./Profile.css";
 
 function Profile() {
 
-    const [files, setFiles] = useState([]);
+
 
     const user = useSelector(selectUser);
 
@@ -23,15 +23,7 @@ function Profile() {
 
     return (
         <div className="profile">
-            <div className="profile__user">
-                <Avatar style={{ width: "100px", height: "100px", border: "4px solid white", background: "white" }} src={user.photoUrl} />
-                <div className="profile__details">
-                    <div className="profile__detailsItem"><div>Name:</div> <span>{user.displayName}</span></div>
-                    <div className="profile__detailsItem"><div>Email:</div>   <span>{user.email}</span></div>
-                    <div className="profile__detailsItem"><div>Usage:</div>   <span>{files.length} files</span></div>
-                </div>
-            </div>
-            <Button onClick={() => dispatch(logout())}>Signout</Button>
+
         </div>
     )
 }

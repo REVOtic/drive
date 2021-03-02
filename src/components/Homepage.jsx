@@ -10,8 +10,6 @@ import { Client, createUserAuth } from '@textile/hub';
 
 function Homepage() {
 
-
-    const [files, setFiles] = useState([]);
     const [userAuth, setUserAuth] = useState(null);
     const user = useSelector(selectUser);
 
@@ -63,15 +61,6 @@ function Homepage() {
         <div className="homepage">
             <div className="cards">
 
-                {files.map(file => <Card
-                    filehash={file.filehash}
-                    filename={file.filename}
-                    date={file.date}
-                    desc={file.desc}
-                    id={file.id}
-                    key={file.id}
-                    ftype={file.ftype}
-                />)}
             </div>
         </div >
     )

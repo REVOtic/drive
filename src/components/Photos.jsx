@@ -6,7 +6,7 @@ import "./Photos.css";
 
 function Photos() {
 
-    const [files, setFiles] = useState([]);
+
     const user = useSelector(selectUser);
 
 
@@ -21,14 +21,7 @@ function Photos() {
 
     return (
         <div className="photos">
-            {files.map(file => <Card
-                filehash={file.filehash}
-                filename={file.filename}
-                date={file.date}
-                desc={file.desc}
-                id={file.id}
-                key={file.id}
-                ftype={file.ftype} />)}
+
         </div>
     )
 }

@@ -17,12 +17,11 @@ function App() {
 
   const user = useSelector(selectUser);
 
-  console.log(user);
+  console.table(user);
+
   return (
     <div className="app">
       <Router>
-
-
         {!user ? (
           <Login />
         ) : (

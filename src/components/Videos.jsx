@@ -18,15 +18,7 @@ function Videos() {
 
     return (
         <div className="videos">
-            {files.map(file => <Card
-                filehash={file.filehash}
-                filename={file.filename}
-                date={file.date}
-                desc={file.desc}
-                id={file.id}
-                key={file.id}
-                ftype={file.ftype}
-            />)}
+
         </div>
     )
 }

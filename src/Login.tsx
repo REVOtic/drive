@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-// @ts-ignore
-import { dispatchCustomEvent, GlobalNotification } from 'slate-react-system';
 import { PrivateKey } from '@textile/hub';
 import { BigNumber, providers, utils } from 'ethers';
 import { hashSync } from 'bcryptjs';
 import { Button, Input } from '@material-ui/core';
 import "./Login.css";
-import fox from "./images/metamask.png"
+import fox from "./images/metamask.png";
+// @ts-ignore
+import { useDispatch } from 'react-redux';
+import { login } from './features/userSlice';
 
 type WindowInstanceWithEthereum = Window & typeof globalThis & { ethereum?: providers.ExternalProvider };
 class StrongType<Definition, Type> {
@@ -20,6 +21,8 @@ function Login() {
 
     const [userSecret, setUserSecret] = useState('');
     const handleChange = (e: any) => setUserSecret(e.target.value);
+
+    const dispatch = useDispatch();
 
     const generateMessageForEntropy = (ethereum_address: EthereumAddress, application_name: string, secret: string): string => {
         return (
@@ -110,36 +113,31 @@ function Login() {
         const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(array))
         console.log(identity.toString())
 
-        createNotification(identity)
-
         // Your app can now use this identity for generating a user Mailbox, Threads, Buckets, etc
         console.log(identity);
+
+        dispatch(login({
+            identity: identity.toString()
+        }))
 
         return identity
     }
 
-    const createNotification = (identity: PrivateKey) => {
-        dispatchCustomEvent({
-            name: "create-notification", detail: {
-                id: 1,
-                description: `PubKey: ${identity.public.toString()}. Your app can now generate and reuse this users PrivateKey for creating user Mailboxes, Threads, and Buckets.`,
-                timeout: 5000,
-            }
-        });
-    }
+
     return (
         <div className="login">
 
             <div className="container">
                 <img src={fox} alt="" />
-                <GlobalNotification style={{ bottom: 0, right: 0 }} />
                 <div className="login__form">
 
                     <p>Combine a private secret with Metamask signing to generate ed25519 private key</p>
-                    <input
+                    <Input
                         name="secret"
                         value={userSecret}
                         placeholder="Secret"
+                        autoFocus={true}
+                        disableUnderline={true}
                         type="password"
                         onChange={handleChange}
                     />
