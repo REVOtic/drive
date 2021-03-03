@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar";
 import Upload from "./components/Upload";
 import Homepage from './components/Homepage';
 import Profile from './components/Profile';
+(global).WebSocket = require('isomorphic-ws')
 
 function App() {
 
@@ -23,35 +24,35 @@ function App() {
     <div className="app">
       <Router>
         {!user ? (
-          <Login />
-        ) : (
+          <Login />) : (
           <>
             <Navbar />
             <Switch>
-              <Route exact path="/photos">
+              <Route exact path="/photos" >
                 <Photos />
               </Route>
-              <Route exact path="/docs">
+              <Route exact path="/docs" >
                 <Docs />
               </Route>
-              <Route exact path="/audios">
+              <Route exact path="/audios" >
                 <Audios />
               </Route>
-              <Route exact path="/videos">
+              <Route exact path="/videos" >
                 <Videos />
               </Route>
-              <Route exact path="/upload">
+              < Route exact path="/upload" >
                 <Upload />
               </Route>
-              <Route exact path="/profile">
+              <Route exact path="/profile" >
                 <Profile />
               </Route>
-              <Route path="/">
+              <Route path="/" >
                 <Homepage />
               </Route>
             </Switch>
           </>
-        )}
+        )
+        }
       </Router>
     </div>
   )
