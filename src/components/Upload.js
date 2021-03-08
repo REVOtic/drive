@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom';
 import "./Upload.css";
 import { IconButton } from '@material-ui/core';
 import PublishIcon from '@material-ui/icons/Publish';
+import { Database } from "@textile/threaddb";
+const schema = require('./schema');
 const React = require('react');
 const CreateIPFSClient = require('ipfs-http-client');
 
@@ -53,6 +55,17 @@ function Upload() {
     }
 
     const pushFiles = async () => {
+        const db = await new Database("drive", { name: "data", schema: schema }).open(1);
+        const data = db.collection('data');
+        await data.insert({
+            name: user.identity.toString(),
+            file: added_file_hash,
+            name: name,
+            description: desc,
+            date: date
+        });
+        console.log("file pushed");
+
 
     }
 
@@ -65,9 +78,9 @@ function Upload() {
         else if (ext === 'mp3' || ext === 'wav') ftype = "audio";
 
         if (added_file_hash && name && desc && date) {
-            fileExists();
 
-            console.log(exist);
+
+            console.log(added_file_hash);
 
             pushFiles();
 

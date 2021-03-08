@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { PrivateKey } from '@textile/hub';
 import { BigNumber, providers, utils } from 'ethers';
-import { hashSync } from 'bcryptjs';
-import { Button, Input } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import "./Login.css";
 import fox from "./images/metamask.png";
 // @ts-ignore
@@ -19,12 +18,9 @@ export class EthereumAddress extends StrongType<'ethereum_address', string> { }
 
 function Login() {
 
-    const [userSecret, setUserSecret] = useState('');
-    const handleChange = (e: any) => setUserSecret(e.target.value);
-
     const dispatch = useDispatch();
 
-    const generateMessageForEntropy = (ethereum_address: EthereumAddress, application_name: string, secret: string): string => {
+    const generateMessageForEntropy = (ethereum_address: EthereumAddress, application_name: string): string => {
         return (
             '******************************************************************************** \n' +
             'READ THIS MESSAGE CAREFULLY. \n' +
@@ -49,7 +45,6 @@ function Login() {
             'The hash of your non-recoverable, private, non-persisted password or secret \n' +
             'phrase is: \n' +
             '\n' +
-            secret +
             '\n' +
             '\n' +
             '\n' +
@@ -91,8 +86,7 @@ function Login() {
     const generatePrivateKey = async (): Promise<PrivateKey> => {
         const metamask = await getAddressAndSigner()
         // avoid sending the raw secret by hashing it first
-        const secret = hashSync(userSecret, 10)
-        const message = generateMessageForEntropy(metamask.address, 'textile-demo', secret)
+        const message = generateMessageForEntropy(metamask.address, 'drive')
         const signedText = await metamask.signer.signMessage(message);
         const hash = utils.keccak256(signedText);
         if (hash === null) {
@@ -130,18 +124,7 @@ function Login() {
             <div className="container">
                 <img src={fox} alt="" />
                 <div className="login__form">
-
-                    <p>Combine a private secret with Metamask signing to generate ed25519 private key</p>
-                    <Input
-                        name="secret"
-                        value={userSecret}
-                        placeholder="Secret"
-                        autoFocus={true}
-                        disableUnderline={true}
-                        type="password"
-                        onChange={handleChange}
-                    />
-                    <Button onClick={generatePrivateKey} >Login with Metamask</Button>
+                    <Button onClick={generatePrivateKey}>Login with Metamask</Button>
                 </div>
             </div>
         </div>
