@@ -5,8 +5,7 @@ import { useHistory } from 'react-router-dom';
 import "./Upload.css";
 import { IconButton } from '@material-ui/core';
 import PublishIcon from '@material-ui/icons/Publish';
-import { Database } from "@textile/threaddb";
-const schema = require('./schema');
+import { Client, createUserAuth, Identity, KeyInfo, PrivateKey, ThreadID } from '@textile/hub';
 const React = require('react');
 const CreateIPFSClient = require('ipfs-http-client');
 
@@ -29,15 +28,107 @@ function Upload() {
 
     const user = useSelector(selectUser);
 
+    const identity = PrivateKey.fromString(user.identity);
+
     const history = useHistory();
 
+    const keyinfo = {
+        key: "bziihv26ota7bqegjxhd3coas4q",
+        secret: "ba3po7yxlfklng63e46aemq3cfodtgsyn5rududq"
+    };
+
+    const dataschema = {
+        title: "Drive Data",
+        type: "object",
+        required: ["_id"],
+        properties: {
+            _id: {
+                type: "string",
+                description: "The instance's id.",
+            },
+            user: {
+                type: "string",
+                description: "The user's identity",
+            },
+            file: {
+                description: "The hashed value of file",
+                type: "string",
+            },
+            ftype: {
+                description: "The type of file being uploaded",
+                type: "string",
+            },
+            name: {
+                description: "The name of the file uploaded",
+                type: "string",
+            },
+            description: {
+                description: "The description of the file",
+                type: "string",
+            },
+            date: {
+                description: "The date of the file",
+                type: "string"
+            }
+        },
+    }
+
+    async function start(schema, key, identity) {
+        const client = await Client.withKeyInfo(key)
+        const token = await client.getToken(identity)
+        console.log(client);
+        console.log(token);
+
+        const file = {
+            user: user.identity,
+            file: added_file_hash,
+            ftype: ftype,
+            name: name,
+            description: desc,
+            date: date,
+            id: ''
+        }
+
+        /**
+         * Setup a new ThreadID and Database
+         */
+        /* const threadId = ThreadID.fromRandom()
+        console.log("New threadId", threadId, " ", typeof (threadId));
+ */
+        /**
+         * Each new ThreadID requires a `newDB` call.
+         */
+        console.log(client);
+
+        /* await client.newDB(threadId, "data");      // doesn't create a new DB
+        console.log("new thread created"); */
+        /**
+         * We add our first Collection to the DB for any schema.
+         */
+
+        /* await client.newCollection(threadId, { name: 'data', schema: schema }); */
+        const threads = await client.listThreads();
+        console.log(threads);
+        /* await client.deleteDB(ThreadID.fromString(threads[0].id.toString()));
+        console.log("Test db deleted"); */
+        console.log("Threads: ", threads);
+        console.log(threads[0].id);
+        const datathreadId = ThreadID.fromString(threads[0].id.toString());
+        console.log("Threads: ", threads);
+
+
+        await client.create(datathreadId, 'data', [file]);
+        console.log("Data Added Successfully");
+
+    }
 
     const captureFile = function (event) {
         setProcess("Wait till we process the file");
         event.stopPropagation()
         event.preventDefault();
         saveToIpfs(event.target.files);
-        setExt(event.target.files[0].name.split('.').pop());
+        const extension = String(event.target.files[0].name.split('.').pop()).toLowerCase();
+        setExt(extension);
     }
 
     const saveToIpfs = async function ([file]) {
@@ -55,18 +146,8 @@ function Upload() {
     }
 
     const pushFiles = async () => {
-        const db = await new Database("drive", { name: "data", schema: schema }).open(1);
-        const data = db.collection('data');
-        await data.insert({
-            name: user.identity.toString(),
-            file: added_file_hash,
-            name: name,
-            description: desc,
-            date: date
-        });
-        console.log("file pushed");
 
-
+        await start(dataschema, keyinfo, identity);
     }
 
     const handleSubmit = function (event) {
@@ -93,15 +174,17 @@ function Upload() {
 
     if (ipfsClient) {
         return (
-            <div className="upload">
-                <div className="upload__form">
-                    <form id='capture-media' onSubmit={handleSubmit} className="ui form">
-                        <div className="upload__formLeft" style={{ backgroundImage: added_file_hash ? `url(https://ipfs.infura.io/ipfs/${added_file_hash}+)` : "none" }}>
+            <div className="upload" >
+                <div className="upload__form" >
+                    <form id='capture-media' onSubmit={handleSubmit} className="ui form" >
+                        <div className="upload__formLeft" style={{ backgroundImage: added_file_hash ? `url(https://ipfs.infura.io/ipfs/${added_file_hash})` : "none" }
+                        }>
                             <input className="input" type='file' name='input-file' id='input-file' onChange={captureFile} required />
-                            <IconButton id="icon-button" onClick={(e) => document.getElementById('input-file').click()}><PublishIcon /></IconButton>
-                            <h4>{added_file_hash ? "File Processed Successfully" : process}</h4>
+                            <IconButton id="icon-button" onClick={(e) => document.getElementById('input-file').click()
+                            }> <PublishIcon /></IconButton >
+                            <h4>{added_file_hash ? "File Processed Successfully" : process} </h4>
                         </div>
-                        <div className="upload__formRight">
+                        < div className="upload__formRight" >
 
                             <input className="input" value={name} placeholder="Name of your file" onChange={(e) => setName(e.target.value)} type='text' name='name' id='file-name' required />
                             <input className="input" value={desc} placeholder="A description of your file" onChange={(e) => setDesc(e.target.value)} type='text' name='desc' id='description' required />
@@ -111,11 +194,11 @@ function Upload() {
                                 onChange={(e) => setDate(e.target.value)}
                                 required
                             />
-                            <button className="ui button" type="submit" >Upload</button>
+                            <button className="ui button" type="submit" > Upload </button>
                         </div>
                     </form>
                 </div>
-            </div >
+            </div>
 
         )
 
