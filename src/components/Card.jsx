@@ -24,10 +24,11 @@ function Card({ id, filehash, filename, date, desc, ftype }) {
 
                 </div>
                 <div className="content">
-                    <div className="header"><h4>{filename.substr(0, 20)}</h4><span className="meta">{date}</span></div>
+                    <div className="header"><h4>{filename}</h4><span className="meta">{date}</span></div>
 
                     <div className="description">
-                        <p>{desc.substr(0, 29) + '...'}</p> <a href={`https://ipfs.infura.io/ipfs/${filehash}`}>View</a>
+                        {/* @ts-ignore */}
+                        <p>{desc}</p> <a target='_blank' href={`https://ipfs.infura.io/ipfs/${filehash}`}>View</a>
                     </div>
                 </div>
             </div >

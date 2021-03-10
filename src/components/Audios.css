@@ -1,9 +1,10 @@
 audio{
     display: grid;
+    
 }
 
 .audiofile{
-    background-color: white;
+    background-color: gray;
     display: flex;
     width: max-content;
     flex-direction: column;

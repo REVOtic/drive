@@ -7,7 +7,19 @@
     width: 280px;
     display: inline-block;
     background-color:grey;
+    cursor: pointer;
 }
+
+.card:hover {
+    box-shadow: 4px 4px 8px royalblue;
+    transform: scale(1.05);
+    transition:ease-in-out;
+}
+
+.card:active {
+    border: 1px solid #d6249f;
+}
+
 
 .card img, video, embed{
     width: 100%;
@@ -15,8 +27,6 @@
 }
 
 .content{
-    position: absolute;
-    bottom: 0px;
     background-color: grey;
     width:300px;
     padding: 6px;
@@ -40,7 +50,8 @@
 .meta{
     font-size:x-small;
     position: absolute;
-    right: 38px;
+    right: 0px;
+    margin-right: 8px;
 }
 
 .description{

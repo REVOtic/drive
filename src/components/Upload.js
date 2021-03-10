@@ -73,7 +73,7 @@ function Upload() {
         },
     }
 
-    async function start(schema, key, identity) {
+    async function push(schema, key, identity) {
         const client = await Client.withKeyInfo(key)
         const token = await client.getToken(identity)
         console.log(client);
@@ -89,25 +89,30 @@ function Upload() {
             id: ''
         }
 
-        /**
-         * Setup a new ThreadID and Database
-         */
-        /* const threadId = ThreadID.fromRandom()
-        console.log("New threadId", threadId, " ", typeof (threadId));
- */
-        /**
-         * Each new ThreadID requires a `newDB` call.
-         */
-        console.log(client);
+        let threads = await client.listThreads();
+        if (threads.length === 0) {
+            /**
+             * Setup a new ThreadID and Database
+             */
+            const threadId = ThreadID.fromRandom()
+            console.log("New threadId", threadId, " ", typeof (threadId));
 
-        /* await client.newDB(threadId, "data");      // doesn't create a new DB
-        console.log("new thread created"); */
-        /**
-         * We add our first Collection to the DB for any schema.
-         */
+            /**
+             * Each new ThreadID requires a `newDB` call.
+             */
+            console.log(client);
 
-        /* await client.newCollection(threadId, { name: 'data', schema: schema }); */
-        const threads = await client.listThreads();
+            await client.newDB(threadId, "data");      // doesn't create a new DB
+            console.log("new thread created");
+            /**
+             * We add our first Collection to the DB for any schema.
+             */
+
+            await client.newCollection(threadId, { name: 'data', schema: schema });
+        }
+
+
+        threads = await client.listThreads();
         console.log(threads);
         /* await client.deleteDB(ThreadID.fromString(threads[0].id.toString()));
         console.log("Test db deleted"); */
@@ -147,7 +152,7 @@ function Upload() {
 
     const pushFiles = async () => {
 
-        await start(dataschema, keyinfo, identity);
+        await push(dataschema, keyinfo, identity);
     }
 
     const handleSubmit = function (event) {
