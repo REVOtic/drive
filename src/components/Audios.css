@@ -1,6 +1,5 @@
-audio{
-    display: grid;
-    
+.audios{
+    flex: 1;
 }
 
 .audiofile{

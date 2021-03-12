@@ -102,7 +102,7 @@ function Upload() {
              */
             console.log(client);
 
-            await client.newDB(threadId, "data");      // doesn't create a new DB
+            await client.newDB(threadId, "data");
             console.log("new thread created");
             /**
              * We add our first Collection to the DB for any schema.
@@ -113,7 +113,6 @@ function Upload() {
 
 
         threads = await client.listThreads();
-        console.log(threads);
         /* await client.deleteDB(ThreadID.fromString(threads[0].id.toString()));
         console.log("Test db deleted"); */
         console.log("Threads: ", threads);
@@ -182,9 +181,9 @@ function Upload() {
             <div className="upload" >
                 <div className="upload__form" >
                     <form id='capture-media' onSubmit={handleSubmit} className="ui form" >
-                        <div className="upload__formLeft" style={{ backgroundImage: added_file_hash ? `url(https://ipfs.infura.io/ipfs/${added_file_hash})` : "none" }
+                        <div className="upload__formLeft" style={{ backgroundImage: added_file_hash ? `url(https://ipfs.infura.io/ipfs/${added_file_hash})` : "none", }
                         }>
-                            <input className="input" type='file' name='input-file' id='input-file' onChange={captureFile} required />
+                            <input className="input" type='file' accept='jpg, jpeg, png, pdf, mp3, mp4' name='input-file' id='input-file' onChange={captureFile} required />
                             <IconButton id="icon-button" onClick={(e) => document.getElementById('input-file').click()
                             }> <PublishIcon /></IconButton >
                             <h4>{added_file_hash ? "File Processed Successfully" : process} </h4>

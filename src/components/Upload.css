@@ -33,6 +33,14 @@
     flex-direction: column;
     justify-content: space-around;
     border-right: 1px solid grey;
+    background-size: contain;
+    background-repeat: round
+}
+
+.upload__formLeft h4 {
+    background-color: lightgray;
+    border-radius: 6px;
+    padding: 2px;
 }
 
 .upload__formRight{

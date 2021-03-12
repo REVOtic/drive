@@ -15,8 +15,8 @@ function Audios() {
     const identity = PrivateKey.fromString(user.identity);
 
     const keyinfo = {
-        key: "bziihv26ota7bqegjxhd3coas4q",
-        secret: "ba3po7yxlfklng63e46aemq3cfodtgsyn5rududq"
+        key: process.env.REACT_APP_KEY,
+        secret: process.env.REACT_APP_SECRET
     };
 
     let token = null;
@@ -39,8 +39,8 @@ function Audios() {
 
     return (
         <div className="audios">
-            {files.map(file => <div className="audiofile">
-                <audio controls preload><source src={`https://ipfs.infura.io/ipfs/${file.file}`} type="" /></audio><div className="audio__info">
+            {files.map(file => <div id={file.id} className="audiofile">
+                <audio controls preload="true" ><source src={`https://ipfs.infura.io/ipfs/${file.file}`} type="" /></audio><div className="audio__info">
                     <div className="audio__meta"><h4>{file.name.substr(0, 20)}</h4><span>{file.date}</span></div>
 
                     <div className="audio__footer">

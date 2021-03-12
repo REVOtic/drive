@@ -16,8 +16,9 @@ function Homepage() {
     const identity: Identity = PrivateKey.fromString(user.identity);
 
     const keyinfo: KeyInfo = {
-        key: "bziihv26ota7bqegjxhd3coas4q",
-        secret: "ba3po7yxlfklng63e46aemq3cfodtgsyn5rududq"
+        // @ts-ignore
+        key: process.env.REACT_APP_KEY,
+        secret: process.env.REACT_APP_SECRET
     };
 
     let token = null;
@@ -31,9 +32,9 @@ function Homepage() {
         const recievedFiles = await client.find(datathreadId, 'data', query);
         // @ts-ignore
         setFiles(recievedFiles.map(file => ({ file: file.file, desc: file.description, date: file.date, ftype: file.ftype, name: file.name, id: file._id })));
-
-        console.log(files);
     }
+
+
 
     useEffect(() => {
         getFiles(keyinfo, identity)

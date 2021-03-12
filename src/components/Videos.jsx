@@ -13,8 +13,8 @@ function Videos() {
     const identity = PrivateKey.fromString(user.identity);
 
     const keyinfo = {
-        key: "bziihv26ota7bqegjxhd3coas4q",
-        secret: "ba3po7yxlfklng63e46aemq3cfodtgsyn5rududq"
+        key: process.env.REACT_APP_KEY,
+        secret: process.env.REACT_APP_SECRET
     };
 
     let token = null;
