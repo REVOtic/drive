@@ -105,10 +105,6 @@ function Login() {
             throw new Error('Hash of signature is not the correct size! Something went wrong!');
         }
         const identity = PrivateKey.fromRawEd25519Seed(Uint8Array.from(array))
-        console.log(identity.toString())
-
-        // Your app can now use this identity for generating a user Mailbox, Threads, Buckets, etc
-        console.log(identity);
 
         dispatch(login({
             identity: identity.toString()

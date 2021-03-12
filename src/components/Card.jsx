@@ -14,10 +14,10 @@ function Card({ id, filehash, filename, date, desc, ftype }) {
                     /> : (ftype === 'video' ? <video
                         preload="true" controls
                         key={id}>
-                        <source src={'http://ipfs.infura.io/ipfs/' + filehash} />
+                        <source src={'https://ipfs.infura.io/ipfs/' + filehash} />
                     </video> : (ftype === 'document' ? <embed
                         key={id}
-                        src={"http://ipfs.infura.io/ipfs/" + filehash}
+                        src={"https://ipfs.infura.io/ipfs/" + filehash}
                         width="100px"
                         height="200px"
                     /> : null))}

@@ -18,8 +18,6 @@ function App() {
 
   const user = useSelector(selectUser);
 
-  console.table(user);
-
   return (
     <div className="app">
       <Router>

@@ -76,8 +76,6 @@ function Upload() {
     async function push(schema, key, identity) {
         const client = await Client.withKeyInfo(key)
         const token = await client.getToken(identity)
-        console.log(client);
-        console.log(token);
 
         const file = {
             user: user.identity,
@@ -95,15 +93,14 @@ function Upload() {
              * Setup a new ThreadID and Database
              */
             const threadId = ThreadID.fromRandom()
-            console.log("New threadId", threadId, " ", typeof (threadId));
 
             /**
              * Each new ThreadID requires a `newDB` call.
              */
-            console.log(client);
 
             await client.newDB(threadId, "data");
             console.log("new thread created");
+
             /**
              * We add our first Collection to the DB for any schema.
              */
@@ -115,12 +112,9 @@ function Upload() {
         threads = await client.listThreads();
         /* await client.deleteDB(ThreadID.fromString(threads[0].id.toString()));
         console.log("Test db deleted"); */
-        console.log("Threads: ", threads);
-        console.log(threads[0].id);
         const datathreadId = ThreadID.fromString(threads[0].id.toString());
-        console.log("Threads: ", threads);
 
-
+        // Creating a schema instance (adding data to the collection)
         await client.create(datathreadId, 'data', [file]);
         console.log("Data Added Successfully");
 
@@ -163,9 +157,6 @@ function Upload() {
         else if (ext === 'mp3' || ext === 'wav') ftype = "audio";
 
         if (added_file_hash && name && desc && date) {
-
-
-            console.log(added_file_hash);
 
             pushFiles();
 
